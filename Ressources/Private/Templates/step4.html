@@ -1,0 +1,135 @@
+{namespace inst=Tx_PackageInstall_ViewHelpers}
+<style type="text/css">
+	fieldset ul {
+		list-style: none;
+	}
+	label.package {
+		width: 100%;
+		position:relative;
+	}
+	label.package input {
+		float:   left;
+	}
+	label.package div {
+		margin-left: 30px;
+	}
+	.packageIcon {
+		float:left;
+		margin-right: 5px;
+		margin-bottom: 5px;
+	}
+	.packageScreenshot {
+		clear: both;
+		float: none;
+		max-width: 100%;
+		display: none;
+	}
+	.package:hover .packageScreenshot{
+		display: block;
+		position:absolute;
+		left: 362px;
+		top: 0px;
+		border: 7px solid #585858;
+		background: #EBEBEB;
+	}
+	.package:hover:after{
+		position: absolute;
+		right: 5px;
+		top: 5px;
+		border-top:    10px solid transparent;
+		border-right:  10px solid #585858;
+		border-bottom: 10px solid transparent;
+		content: "";
+		display: block;
+	}
+</style>
+<script type="text/javascript">
+	document.observe('dom:loaded', function() {
+		$$('.packageOptions').invoke('hide');
+		$$(".packageSelector").invoke(
+			'observe',
+			'change',
+			function(){
+				$$('.packageOptions').invoke('hide');
+				if($("options-" + this.id)) {
+					$("options-" + this.id).show();
+				}
+			}
+		);
+	});
+
+</script>
+<form method="post" action="{action}" id="t3-install-123-step4">
+	<fieldset class="t3-install-form-label-width-7">
+		<h4>Select the package to install</h4>
+		<ul>
+			<li>
+				<label for="checkbox-blank" class="package">
+					<input type="radio" name="packageToInstall" id="checkbox-blank" value="blank" checked="checked" class="packageSelector">
+					<div>
+						<img src="../gfx/typo3.png" class="packageIcon"/>
+						<h4>blank TYPO3</h4>
+						<span class="packageScreenshot">no preview available</span>
+					</div>
+				</label>
+			</li>
+			<f:for each="{packages}" as="package" key="packageId">
+				<li>
+					<label for="package-{package.key}" class="package">
+						<input type="radio" name="packageToInstall" id="package-{package.key}" value="{package.key}" class="packageSelector">
+						<div>
+							<f:if condition="{package.information.iconBase64}">
+								<f:then>
+									<img src="data:image/png;base64,{package.information.iconBase64}" class="packageIcon"/>
+								</f:then>
+								<f:else>
+									<img src="../gfx/typo3.png" class="packageIcon"/>
+								</f:else>
+							</f:if>
+							<h4>
+								{package.information.name}
+								<f:if condition="{package.information.version}">
+									({package.information.version})
+								</f:if>
+							</h4>
+							{package.information.description}
+							<f:if condition="{package.information.screenshotBase64}">
+								<f:then>
+									<img src="data:image/png;base64,{package.information.screenshotBase64}" class="packageScreenshot"/>
+								</f:then>
+								<f:else>
+									<span class="packageScreenshot">no preview available</span>
+								</f:else>
+							</f:if>
+						</div>
+					</label>
+				</li>
+			</f:for>
+		</ul>
+	</fieldset>
+	<fieldset class="generalsettings t3-install-form-label-above">
+		<h4>General Options</h4>
+		<ul>
+			<li>
+				<label for="install-password">Installtool and admin password. Use "admin" as username and the below password to login into the TYPO3 backend.</label>
+				<input type="password" name="password" id="install-password" class="t3-install-form-input-text"/>
+			</li>
+		</ul>
+	</fieldset>
+	<f:for each="{packages}" as="package" key="packageId">
+		<f:if condition="{package.form}">
+			<fieldset id="options-package-{package.key}" class="packageOptions t3-install-form-label-above">
+				<h4>{package.information.title} Options</h4>
+				<inst:plain value="{package.form}" />
+			</fieldset>
+		</f:if>
+
+	</f:for>
+	<fieldset class="t3-install-form-submit">
+		<ol>
+			<li>
+				<button type="submit">Continue<span class="t3-install-form-button-icon-positive">&nbsp;</span></button>
+			</li>
+		</ol>
+	</fieldset>
+</form>

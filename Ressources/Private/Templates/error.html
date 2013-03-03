@@ -1,0 +1,19 @@
+
+	<f:if condition="{errorPost}">
+		<f:then>
+			<div class="typo3-message message-information">
+				<h4>parameter</h4>
+				<pre>{error}</pre>
+			</div>
+			<p></p>
+			<div class="typo3-message message-error">
+				<h4>parameter related error message</h4>
+				<small>{errorPost}</small>
+			</div>
+		</f:then>
+		<f:else>
+			<div class="typo3-message message-error">
+				{error}
+			</div>
+		</f:else>
+	</f:if>
